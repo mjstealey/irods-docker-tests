@@ -25,7 +25,7 @@ fi
 docker run -d --name icat \
     --env-file icat.env \
     --hostname icat \
-    mjstealey/docker-irods-icat:4.1.8 &
+    mjstealey/docker-irods-icat:4.1.8
 
 # Wait for icat to stand up
 sleep 20s
