@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Remove icat and resource containers if the already exist
+# Remove provider and consumer containers if the already exist
 ISPROVIDER=$(docker ps -a | rev | cut -d ' ' -f 1 | rev | grep provider)
 ISCONSUMER=$(docker ps -a | rev | cut -d ' ' -f 1 | rev | grep consumer)
 
@@ -21,7 +21,7 @@ docker run -d --name provider \
     --hostname provider \
     mjstealey/irods-provider:latest
 
-# Wait for icat to stand up
+# Wait for provider to stand up
 sleep 20s
 # Create consumer container from irods v.4.2.0-preview
 CONSUMERIP=$(docker run --rm mjstealey/irods-consumer:latest /sbin/ip -f inet -4 -o addr | grep eth | cut -d '/' -f 1 | rev | cut -d ' ' -f 1 | rev)
@@ -33,13 +33,15 @@ docker run -d --name consumer \
     --link provider:provider \
     mjstealey/irods-consumer:latest
 
-# Wait for resource to stand up
+# Wait for consumer to stand up
 sleep 20s
 
 # verify connectivity
+# put file into consumer owned resource from provider
 docker exec -u irods provider iput -R consumerResource irods.config provider-irods.config
+# put file into provider owned resource from consumer
 docker exec -u irods consumer iput -R demoResc irods.config consumer-irods.config
-
+# use irods-icommnads to verify file placement
 docker run --rm --link provider:provider \
     -e IRODS_HOST=provider \
     -e IRODS_PORT=1247 \

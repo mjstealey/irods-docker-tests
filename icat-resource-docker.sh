@@ -6,22 +6,16 @@ ISRESOURCE=$(docker ps -a | rev | cut -d ' ' -f 1 | rev | grep resource)
 
 if [[ "${ISICAT}" == "icat" ]]; then
     echo "REMOVE: icat"
-#    echo "  - rm -rf /home/${USER}/irods/icat"
-#    rm -rf /home/${USER}/irods/icat
     echo "  - docker stop icat && docker rm -fv icat"
     docker stop icat && docker rm -fv icat
 fi
 if [[ "${ISRESOURCE}" == "resource" ]]; then
     echo "REMOVE: resource"
-#    echo "  - rm -rf /home/${USER}/irods/resource"
-#    rm -rf /home/${USER}/irods/resource
     echo "  - docker stop resource && docker rm -fv resource"
     docker stop resource && docker rm -fv resource
 fi
 
 # Create icat container from irods v.4.1.8
-#     --volume /home/${USER}/irods/icat:/var/lib/irods/iRODS/server/log \
-#mkdir -p /home/${USER}/irods/icat
 docker run -d --name icat \
     --env-file icat.env \
     --hostname icat \
@@ -33,8 +27,6 @@ sleep 20s
 RESOURCEIP=$(docker run --rm mjstealey/docker-irods-resource:4.1.8 /sbin/ip -f inet -4 -o addr | grep eth | cut -d '/' -f 1 | rev | cut -d ' ' -f 1 | rev)
 docker exec icat sh -c 'echo "'${RESOURCEIP}' resource" >> /etc/hosts'
 
-#     --volume /home/${USER}/irods/resource:/var/lib/irods/iRODS/server/log \
-#mkdir -p /home/${USER}/irods/resource
 docker run -d --name resource \
     --env-file resource.env \
     --hostname resource \
@@ -45,9 +37,11 @@ docker run -d --name resource \
 sleep 20s
 
 # verify connectivity
+# put file into resource owned resource from icat
 docker exec -u irods icat iput -R resourceResource irods.config icat-irods.config
+# put file into icat owned resource from resource
 docker exec -u irods resource iput -R demoResc irods.config resource-irods.config
-
+# use docker-irods-icommnads to verify file placement
 docker run --rm --link icat:icat \
     -e IRODS_HOST=icat \
     -e IRODS_PORT=1247 \
