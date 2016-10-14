@@ -41,7 +41,7 @@ sleep 20s
 docker exec -u irods icat iput -R resourceResource irods.config icat-irods.config
 # put file into icat owned resource from resource
 docker exec -u irods resource iput -R demoResc irods.config resource-irods.config
-# use docker-irods-icommnads to verify file placement
+# use docker-irods-icommands to verify file placement
 docker run --rm --link icat:icat \
     -e IRODS_HOST=icat \
     -e IRODS_PORT=1247 \
@@ -50,4 +50,11 @@ docker run --rm --link icat:icat \
     -e IRODS_PASSWORD=rods \
     mjstealey/docker-irods-icommands:4.1.8 ils -L
 
+docker run --rm --link resource:resource \
+    -e IRODS_HOST=resource \
+    -e IRODS_PORT=1247 \
+    -e IRODS_USER_NAME=rods \
+    -e IRODS_ZONE_NAME=tempZone \
+    -e IRODS_PASSWORD=rods \
+    mjstealey/docker-irods-icommands:4.1.8 ils -L
 exit 0;

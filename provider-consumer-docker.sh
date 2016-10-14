@@ -19,7 +19,7 @@ fi
 docker run -d --name provider \
     --env-file provider.env \
     --hostname provider \
-    mjstealey/irods-provider:latest
+    mjstealey/irods-provider-postgres:latest
 
 # Wait for provider to stand up
 sleep 20s
@@ -41,9 +41,17 @@ sleep 20s
 docker exec -u irods provider iput -R consumerResource irods.config provider-irods.config
 # put file into provider owned resource from consumer
 docker exec -u irods consumer iput -R demoResc irods.config consumer-irods.config
-# use irods-icommnads to verify file placement
+# use irods-icommands to verify file placement
 docker run --rm --link provider:provider \
     -e IRODS_HOST=provider \
+    -e IRODS_PORT=1247 \
+    -e IRODS_USER_NAME=rods \
+    -e IRODS_ZONE_NAME=tempZone \
+    -e IRODS_PASSWORD=rods \
+    mjstealey/irods-icommands:latest ils -L
+
+docker run --rm --link consumer:consumer \
+    -e IRODS_HOST=consumer \
     -e IRODS_PORT=1247 \
     -e IRODS_USER_NAME=rods \
     -e IRODS_ZONE_NAME=tempZone \
