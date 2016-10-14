@@ -39,6 +39,13 @@ sleep 20s
 # verify connectivity
 docker exec -u irods provider iput -R consumerResource irods.config provider-irods.config
 docker exec -u irods consumer iput -R demoResc irods.config consumer-irods.config
-docker exec -u irods provider ils -L
+
+docker run --rm --link provider:provider \
+    -e IRODS_HOST=provider \
+    -e IRODS_PORT=1247 \
+    -e IRODS_USER_NAME=rods \
+    -e IRODS_ZONE_NAME=tempZone \
+    -e IRODS_PASSWORD=rods \
+    mjstealey/irods-icommands:latest ils -L
 
 exit 0;

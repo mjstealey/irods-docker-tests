@@ -47,6 +47,13 @@ sleep 20s
 # verify connectivity
 docker exec -u irods icat iput -R resourceResource irods.config icat-irods.config
 docker exec -u irods resource iput -R demoResc irods.config resource-irods.config
-docker exec -u irods icat ils -L
+
+docker run --rm --link icat:icat \
+    -e IRODS_HOST=icat \
+    -e IRODS_PORT=1247 \
+    -e IRODS_USER_NAME=rods \
+    -e IRODS_ZONE_NAME=tempZone \
+    -e IRODS_PASSWORD=rods \
+    mjstealey/docker-irods-icommands:4.1.8 ils -L
 
 exit 0;
