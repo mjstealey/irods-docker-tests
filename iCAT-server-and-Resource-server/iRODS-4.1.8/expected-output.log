@@ -1,0 +1,12 @@
+722747a5229563596e66ebf001e5952297f9d9fa3c263219f4bd606435f6fa49
+66d0a9bd1bbc771bac32e12ea49ea0682c1c056f371d92411f13170fd7759055
+/tempZone/home/rods:
+  rods              0 resourceResource          247 2016-10-15.13:13 & icat-irods.config
+        generic    /var/lib/irods/iRODS/Vault/home/rods/icat-irods.config
+  rods              0 demoResc          218 2016-10-15.13:13 & resource-irods.config
+        generic    /var/lib/irods/iRODS/Vault/home/rods/resource-irods.config
+/tempZone/home/rods:
+  rods              0 resourceResource          247 2016-10-15.13:13 & icat-irods.config
+        generic    /var/lib/irods/iRODS/Vault/home/rods/icat-irods.config
+  rods              0 demoResc          218 2016-10-15.13:13 & resource-irods.config
+        generic    /var/lib/irods/iRODS/Vault/home/rods/resource-irods.config

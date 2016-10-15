@@ -1,0 +1,12 @@
+4543a54e2338da4abd191dc39b047028fe43f3672e34321ebc5f30190145c236
+3c7640682ad9a14f994b1fe31dcb6b3d2b05f9389b015b5adc228f5882220779
+/tempZone/home/rods:
+  rods              0 demoResc          224 2016-10-15.13:17 & consumer-irods.config
+        generic    /var/lib/irods/iRODS/Vault/home/rods/consumer-irods.config
+  rods              0 consumerResource          268 2016-10-15.13:17 & provider-irods.config
+        generic    /var/lib/irods/iRODS/Vault/home/rods/provider-irods.config
+/tempZone/home/rods:
+  rods              0 demoResc          224 2016-10-15.13:17 & consumer-irods.config
+        generic    /var/lib/irods/iRODS/Vault/home/rods/consumer-irods.config
+  rods              0 consumerResource          268 2016-10-15.13:17 & provider-irods.config
+        generic    /var/lib/irods/iRODS/Vault/home/rods/provider-irods.config

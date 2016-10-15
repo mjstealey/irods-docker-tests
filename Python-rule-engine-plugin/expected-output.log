@@ -1,0 +1,986 @@
+INFO: run Docker container from mjstealey/irods-provider-postgres:latest as provider
+af58a396f5350665e30853bcbad3d35d0a2108d68bfcd7768faeb70a2253222a
+INFO: allow provider container to stand up
+20 ...[0K19 ...[0K18 ...[0K17 ...[0K16 ...[0K15 ...[0K14 ...[0K13 ...[0K12 ...[0K11 ...[0K10 ...[0K9 ...[0K8 ...[0K7 ...[0K6 ...[0K5 ...[0K4 ...[0K3 ...[0K2 ...[0K1 ...[0KCHECKPOINT: verify shared objects
+$ ls /var/lib/irods/plugins/rule_engines/
+libirods_rule_engine_plugin-cpp_default_policy.so
+libirods_rule_engine_plugin-irods_rule_language.so
+libirods_rule_engine_plugin-python.so
+CHECKPOINT: verify rule_engines stanza
+$ cat /etc/irods/server_config.json | jq '.plugin_configuration.rule_engines'
+[
+  {
+    "instance_name": "irods_rule_engine_plugin-python-instance",
+    "plugin_name": "irods_rule_engine_plugin-python",
+    "plugin_specific_configuration": "{}"
+  },
+  {
+    "instance_name": "irods_rule_engine_plugin-irods_rule_language-instance",
+    "plugin_name": "irods_rule_engine_plugin-irods_rule_language",
+    "plugin_specific_configuration": {
+      "re_data_variable_mapping_set": [
+        "core"
+      ],
+      "re_function_name_mapping_set": [
+        "core"
+      ],
+      "re_rulebase_set": [
+        "core"
+      ],
+      "regexes_for_supported_peps": [
+        "ac[^ ]*",
+        "msi[^ ]*",
+        "[^ ]*pep_[^ ]*_(pre|post)"
+      ]
+    },
+    "shared_memory_instance": "legacy_re"
+  }
+]
+INFO: add training.re and core.py files to container
+Hit http://apt.postgresql.org jessie-pgdg InRelease
+Get:1 http://security.debian.org jessie/updates InRelease [63.1 kB]
+Get:2 https://unstable.irods.org trusty InRelease [307 B]
+Ign https://unstable.irods.org trusty InRelease
+Get:3 http://apt.postgresql.org jessie-pgdg/main amd64 Packages [107 kB]
+Hit https://unstable.irods.org trusty Release.gpg
+Ign http://httpredir.debian.org jessie InRelease
+Hit https://unstable.irods.org trusty Release
+Get:4 https://unstable.irods.org trusty/main amd64 Packages [5,192 B]
+Get:5 http://httpredir.debian.org jessie-updates InRelease [142 kB]
+Get:6 http://apt.postgresql.org jessie-pgdg/9.4 amd64 Packages [1,708 B]
+Get:7 http://security.debian.org jessie/updates/main amd64 Packages [391 kB]
+Hit http://httpredir.debian.org jessie Release.gpg
+Get:8 http://httpredir.debian.org jessie-updates/main amd64 Packages [17.6 kB]
+Hit http://httpredir.debian.org jessie Release
+Get:9 http://httpredir.debian.org jessie/main amd64 Packages [9,064 kB]
+Fetched 9,791 kB in 24s (392 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+python-jsonschema is already the newest version.
+python-jsonschema set to manually installed.
+python-psutil is already the newest version.
+python-psutil set to manually installed.
+super is already the newest version.
+super set to manually installed.
+unixodbc is already the newest version.
+unixodbc set to manually installed.
+odbc-postgresql is already the newest version.
+odbc-postgresql set to manually installed.
+The following extra packages will be installed:
+  autotools-dev binutils bzip2-doc comerr-dev cpp cpp-4.9 g++-4.9 gcc gcc-4.9
+  git-man krb5-multidev less libasan1 libatomic1 libc-dev-bin libc6-dev
+  libcilkrts5 libcloog-isl4 libcommon-sense-perl liberror-perl libexpat1-dev
+  libgcc-4.9-dev libgomp1 libgssrpc4 libisl10 libitm1 libjson-xs-perl
+  libkadm5clnt-mit9 libkadm5srv-mit9 libkdb5-7 liblsan0 libltdl-dev libmpc3
+  libmpfr4 libpcre3-dev libpcrecpp0 libpython-dev libpython2.7
+  libpython2.7-dev libquadmath0 libselinux1-dev libsepol1-dev libssl-doc
+  libstdc++-4.9-dev libtool libtsan0 libubsan0 libx11-6 libx11-data libxau6
+  libxcb1 libxdmcp6 libxext6 libxmuu1 linux-libc-dev manpages manpages-dev
+  openssh-client patch python2.7-dev rsync xauth
+Suggested packages:
+  binutils-doc doc-base cpp-doc gcc-4.9-locales g++-multilib g++-4.9-multilib
+  gcc-4.9-doc libstdc++6-4.9-dbg gcc-multilib autoconf automake flex bison gdb
+  gcc-doc gcc-4.9-multilib libgcc1-dbg libgomp1-dbg libitm1-dbg libatomic1-dbg
+  libasan1-dbg liblsan0-dbg libtsan0-dbg libubsan0-dbg libcilkrts5-dbg
+  libquadmath0-dbg gettext-base git-daemon-run git-daemon-sysvinit git-doc
+  git-el git-email git-gui gitk gitweb git-arch git-cvs git-mediawiki git-svn
+  krb5-doc glibc-doc libcurl4-doc libcurl3-dbg libgnutls28-dev libidn11-dev
+  libldap2-dev librtmp-dev libssh2-1-dev pkg-config fuse krb5-user libtool-doc
+  libstdc++-4.9-doc automaken gfortran fortran95-compiler gcj-jdk make-doc
+  man-browser ssh-askpass libpam-ssh keychain monkeysphere ed diffutils-doc
+  openssh-server
+Recommended packages:
+  ssh-client
+The following NEW packages will be installed:
+  autotools-dev binutils bzip2-doc comerr-dev cpp cpp-4.9 g++ g++-4.9 gcc
+  gcc-4.9 git git-man help2man krb5-multidev less libasan1 libatomic1
+  libbz2-dev libc-dev-bin libc6-dev libcilkrts5 libcloog-isl4
+  libcommon-sense-perl libcurl4-gnutls-dev liberror-perl libexpat1-dev
+  libfuse-dev libgcc-4.9-dev libgomp1 libgssrpc4 libisl10 libitm1 libjson-perl
+  libjson-xs-perl libkadm5clnt-mit9 libkadm5srv-mit9 libkdb5-7 libkrb5-dev
+  liblsan0 libltdl-dev libmpc3 libmpfr4 libpam0g-dev libpcre3-dev libpcrecpp0
+  libpython-dev libpython2.7 libpython2.7-dev libquadmath0 libselinux1-dev
+  libsepol1-dev libssl-dev libssl-doc libstdc++-4.9-dev libtool libtsan0
+  libubsan0 libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxext6
+  libxml2-dev libxmuu1 linux-libc-dev make manpages manpages-dev
+  openssh-client patch python-dev python-exif python2.7-dev rsync unixodbc-dev
+  xauth zlib1g-dev
+0 upgraded, 78 newly installed, 0 to remove and 3 not upgraded.
+Need to get 80.8 MB of archives.
+After this operation, 229 MB of additional disk space will be used.
+Get:1 http://security.debian.org/ jessie/updates/main libssl-dev amd64 1.0.1t-1+deb8u5 [1,283 kB]
+Get:2 http://httpredir.debian.org/debian/ jessie/main libgssrpc4 amd64 1.12.1+dfsg-19+deb8u2 [86.1 kB]
+Get:3 http://httpredir.debian.org/debian/ jessie/main libkadm5clnt-mit9 amd64 1.12.1+dfsg-19+deb8u2 [68.5 kB]
+Get:4 http://httpredir.debian.org/debian/ jessie/main libkdb5-7 amd64 1.12.1+dfsg-19+deb8u2 [68.5 kB]
+Get:5 http://httpredir.debian.org/debian/ jessie/main libkadm5srv-mit9 amd64 1.12.1+dfsg-19+deb8u2 [83.0 kB]
+Get:6 http://httpredir.debian.org/debian/ jessie/main libcilkrts5 amd64 4.9.2-10 [40.1 kB]
+Get:7 http://httpredir.debian.org/debian/ jessie/main libatomic1 amd64 4.9.2-10 [8,992 B]
+Get:8 http://httpredir.debian.org/debian/ jessie/main libasan1 amd64 4.9.2-10 [195 kB]
+Get:9 http://httpredir.debian.org/debian/ jessie/main libisl10 amd64 0.12.2-2 [440 kB]
+Get:10 http://security.debian.org/ jessie/updates/main libssl-doc all 1.0.1t-1+deb8u5 [1,167 kB]
+Get:11 http://httpredir.debian.org/debian/ jessie/main libgomp1 amd64 4.9.2-10 [37.8 kB]
+Get:12 http://httpredir.debian.org/debian/ jessie/main libitm1 amd64 4.9.2-10 [29.2 kB]
+Get:13 http://httpredir.debian.org/debian/ jessie/main libcloog-isl4 amd64 0.18.2-1+b2 [61.8 kB]
+Get:14 http://httpredir.debian.org/debian/ jessie/main liblsan0 amd64 4.9.2-10 [92.8 kB]
+Get:15 http://httpredir.debian.org/debian/ jessie/main libmpfr4 amd64 3.1.2-2 [527 kB]
+Get:16 http://httpredir.debian.org/debian/ jessie/main libpython2.7 amd64 2.7.9-2+deb8u1 [1,081 kB]
+Get:17 http://httpredir.debian.org/debian/ jessie/main libc-dev-bin amd64 2.19-18+deb8u6 [238 kB]
+Get:18 http://httpredir.debian.org/debian/ jessie/main libpcrecpp0 amd64 2:8.35-3.3+deb8u4 [142 kB]
+Get:19 http://httpredir.debian.org/debian/ jessie/main libc6-dev amd64 2.19-18+deb8u6 [2,002 kB]
+Get:20 http://httpredir.debian.org/debian/ jessie/main libexpat1-dev amd64 2.1.0-6+deb8u3 [126 kB]
+Get:21 http://httpredir.debian.org/debian/ jessie/main linux-libc-dev amd64 3.16.36-1+deb8u1 [1,034 kB]
+Get:22 http://httpredir.debian.org/debian/ jessie/main libpython2.7-dev amd64 2.7.9-2+deb8u1 [18.6 MB]
+Get:23 http://httpredir.debian.org/debian/ jessie/main libx11-6 amd64 2:1.6.2-3 [729 kB]
+Get:24 http://httpredir.debian.org/debian/ jessie/main libquadmath0 amd64 4.9.2-10 [129 kB]
+Get:25 http://httpredir.debian.org/debian/ jessie/main libx11-data all 2:1.6.2-3 [126 kB]
+Get:26 http://httpredir.debian.org/debian/ jessie/main libtsan0 amd64 4.9.2-10 [212 kB]
+Get:27 http://httpredir.debian.org/debian/ jessie/main libxext6 amd64 2:1.3.3-1 [52.7 kB]
+Get:28 http://httpredir.debian.org/debian/ jessie/main libxmuu1 amd64 2:1.1.2-1 [23.3 kB]
+Get:29 http://httpredir.debian.org/debian/ jessie/main libxau6 amd64 1:1.0.8-1 [20.7 kB]
+Get:30 http://httpredir.debian.org/debian/ jessie/main libxcb1 amd64 1.10-3+b1 [44.4 kB]
+Get:31 http://httpredir.debian.org/debian/ jessie/main libmpc3 amd64 1.0.2-1 [39.3 kB]
+Get:32 http://httpredir.debian.org/debian/ jessie/main manpages all 3.74-1 [997 kB]
+Get:33 http://httpredir.debian.org/debian/ jessie/main bzip2-doc all 1.0.6-7 [307 kB]
+Get:34 http://httpredir.debian.org/debian/ jessie/main libgcc-4.9-dev amd64 4.9.2-10 [2,066 kB]
+Get:35 http://httpredir.debian.org/debian/ jessie/main gcc-4.9 amd64 4.9.2-10 [5,352 kB]
+Get:36 http://httpredir.debian.org/debian/ jessie/main openssh-client amd64 1:6.7p1-5+deb8u3 [690 kB]
+Get:37 http://httpredir.debian.org/debian/ jessie/main gcc amd64 4:4.9.2-2 [5,136 B]
+Get:38 http://httpredir.debian.org/debian/ jessie/main libstdc++-4.9-dev amd64 4.9.2-10 [1,121 kB]
+Get:39 http://httpredir.debian.org/debian/ jessie/main krb5-multidev amd64 1.12.1+dfsg-19+deb8u2 [145 kB]
+Get:40 http://httpredir.debian.org/debian/ jessie/main patch amd64 2.7.5-1 [109 kB]
+Get:41 http://httpredir.debian.org/debian/ jessie/main binutils amd64 2.25-5 [3,516 kB]
+Get:42 http://httpredir.debian.org/debian/ jessie/main libsepol1-dev amd64 2.3-2 [165 kB]
+Get:43 http://httpredir.debian.org/debian/ jessie/main libpcre3-dev amd64 2:8.35-3.3+deb8u4 [441 kB]
+Get:44 http://httpredir.debian.org/debian/ jessie/main libfuse-dev amd64 2.9.3-15+deb8u2 [150 kB]
+Get:45 http://httpredir.debian.org/debian/ jessie/main libltdl-dev amd64 2.4.2-1.11+b1 [157 kB]
+Get:46 http://httpredir.debian.org/debian/ jessie/main libpam0g-dev amd64 1.1.8-3.1+deb8u1+b1 [183 kB]
+Get:47 http://httpredir.debian.org/debian/ jessie/main libjson-xs-perl amd64 2.340-1+b2 [85.9 kB]
+Get:48 http://httpredir.debian.org/debian/ jessie/main libxml2-dev amd64 2.9.1+dfsg1-5+deb8u3 [695 kB]
+Get:49 http://httpredir.debian.org/debian/ jessie/main make amd64 4.0-8.1 [349 kB]
+Get:50 http://httpredir.debian.org/debian/ jessie/main cpp amd64 4:4.9.2-2 [17.3 kB]
+Get:51 http://httpredir.debian.org/debian/ jessie/main rsync amd64 3.1.1-3 [390 kB]
+Get:52 http://httpredir.debian.org/debian/ jessie/main g++ amd64 4:4.9.2-2 [1,530 B]
+Get:53 http://httpredir.debian.org/debian/ jessie/main liberror-perl all 0.17-1.1 [22.4 kB]
+Get:54 http://httpredir.debian.org/debian/ jessie/main manpages-dev all 3.74-1 [1,865 kB]
+Get:55 http://httpredir.debian.org/debian/ jessie/main git-man all 1:2.1.4-2.1+deb8u2 [1,267 kB]
+Get:56 http://httpredir.debian.org/debian/ jessie/main git amd64 1:2.1.4-2.1+deb8u2 [3,262 kB]
+Get:57 http://httpredir.debian.org/debian/ jessie/main python2.7-dev amd64 2.7.9-2+deb8u1 [290 kB]
+Get:58 http://httpredir.debian.org/debian/ jessie/main xauth amd64 1:1.0.9-1 [38.2 kB]
+Get:59 http://httpredir.debian.org/debian/ jessie/main libkrb5-dev amd64 1.12.1+dfsg-19+deb8u2 [42.6 kB]
+Get:60 http://httpredir.debian.org/debian/ jessie/main help2man amd64 1.46.4 [139 kB]
+Get:61 http://httpredir.debian.org/debian/ jessie/main libcommon-sense-perl amd64 3.73-2+b3 [23.7 kB]
+Get:62 http://httpredir.debian.org/debian/ jessie/main zlib1g-dev amd64 1:1.2.8.dfsg-2+b1 [206 kB]
+Get:63 http://httpredir.debian.org/debian/ jessie/main python-exif all 1.4.2-3 [25.8 kB]
+Get:64 http://httpredir.debian.org/debian/ jessie/main unixodbc-dev amd64 2.3.1-3 [245 kB]
+Get:65 http://httpredir.debian.org/debian/ jessie/main libubsan0 amd64 4.9.2-10 [82.4 kB]
+Get:66 http://httpredir.debian.org/debian/ jessie/main libxdmcp6 amd64 1:1.1.1-1+b1 [24.9 kB]
+Get:67 http://httpredir.debian.org/debian/ jessie/main less amd64 458-3 [124 kB]
+Get:68 http://httpredir.debian.org/debian/ jessie/main autotools-dev all 20140911.1 [70.5 kB]
+Get:69 http://httpredir.debian.org/debian/ jessie/main cpp-4.9 amd64 4.9.2-10 [5,169 kB]
+Get:70 http://httpredir.debian.org/debian/ jessie/main g++-4.9 amd64 4.9.2-10 [21.4 MB]
+Get:71 http://httpredir.debian.org/debian/ jessie/main comerr-dev amd64 2.1-1.42.12-2 [38.3 kB]
+Get:72 http://httpredir.debian.org/debian/ jessie/main libbz2-dev amd64 1.0.6-7+b3 [29.0 kB]
+Get:73 http://httpredir.debian.org/debian/ jessie/main libcurl4-gnutls-dev amd64 7.38.0-4+deb8u4 [328 kB]
+Get:74 http://httpredir.debian.org/debian/ jessie/main libselinux1-dev amd64 2.3-2 [158 kB]
+Get:75 http://httpredir.debian.org/debian/ jessie/main libjson-perl all 2.61-1 [84.7 kB]
+Get:76 http://httpredir.debian.org/debian/ jessie/main libpython-dev amd64 2.7.9-1 [19.6 kB]
+Get:77 http://httpredir.debian.org/debian/ jessie/main libtool all 2.4.2-1.11 [190 kB]
+Get:78 http://httpredir.debian.org/debian/ jessie/main python-dev amd64 2.7.9-1 [1,182 B]
+Fetched 80.8 MB in 17s (4,726 kB/s)
+Selecting previously unselected package libgssrpc4:amd64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 26453 files and directories currently installed.)
+Preparing to unpack .../libgssrpc4_1.12.1+dfsg-19+deb8u2_amd64.deb ...
+Unpacking libgssrpc4:amd64 (1.12.1+dfsg-19+deb8u2) ...
+Selecting previously unselected package libkadm5clnt-mit9:amd64.
+Preparing to unpack .../libkadm5clnt-mit9_1.12.1+dfsg-19+deb8u2_amd64.deb ...
+Unpacking libkadm5clnt-mit9:amd64 (1.12.1+dfsg-19+deb8u2) ...
+Selecting previously unselected package libkdb5-7:amd64.
+Preparing to unpack .../libkdb5-7_1.12.1+dfsg-19+deb8u2_amd64.deb ...
+Unpacking libkdb5-7:amd64 (1.12.1+dfsg-19+deb8u2) ...
+Selecting previously unselected package libkadm5srv-mit9:amd64.
+Preparing to unpack .../libkadm5srv-mit9_1.12.1+dfsg-19+deb8u2_amd64.deb ...
+Unpacking libkadm5srv-mit9:amd64 (1.12.1+dfsg-19+deb8u2) ...
+Selecting previously unselected package libasan1:amd64.
+Preparing to unpack .../libasan1_4.9.2-10_amd64.deb ...
+Unpacking libasan1:amd64 (4.9.2-10) ...
+Selecting previously unselected package libatomic1:amd64.
+Preparing to unpack .../libatomic1_4.9.2-10_amd64.deb ...
+Unpacking libatomic1:amd64 (4.9.2-10) ...
+Selecting previously unselected package libcilkrts5:amd64.
+Preparing to unpack .../libcilkrts5_4.9.2-10_amd64.deb ...
+Unpacking libcilkrts5:amd64 (4.9.2-10) ...
+Selecting previously unselected package libisl10:amd64.
+Preparing to unpack .../libisl10_0.12.2-2_amd64.deb ...
+Unpacking libisl10:amd64 (0.12.2-2) ...
+Selecting previously unselected package libcloog-isl4:amd64.
+Preparing to unpack .../libcloog-isl4_0.18.2-1+b2_amd64.deb ...
+Unpacking libcloog-isl4:amd64 (0.18.2-1+b2) ...
+Selecting previously unselected package libgomp1:amd64.
+Preparing to unpack .../libgomp1_4.9.2-10_amd64.deb ...
+Unpacking libgomp1:amd64 (4.9.2-10) ...
+Selecting previously unselected package libitm1:amd64.
+Preparing to unpack .../libitm1_4.9.2-10_amd64.deb ...
+Unpacking libitm1:amd64 (4.9.2-10) ...
+Selecting previously unselected package liblsan0:amd64.
+Preparing to unpack .../liblsan0_4.9.2-10_amd64.deb ...
+Unpacking liblsan0:amd64 (4.9.2-10) ...
+Selecting previously unselected package libmpfr4:amd64.
+Preparing to unpack .../libmpfr4_3.1.2-2_amd64.deb ...
+Unpacking libmpfr4:amd64 (3.1.2-2) ...
+Selecting previously unselected package libpcrecpp0:amd64.
+Preparing to unpack .../libpcrecpp0_2%3a8.35-3.3+deb8u4_amd64.deb ...
+Unpacking libpcrecpp0:amd64 (2:8.35-3.3+deb8u4) ...
+Selecting previously unselected package libpython2.7:amd64.
+Preparing to unpack .../libpython2.7_2.7.9-2+deb8u1_amd64.deb ...
+Unpacking libpython2.7:amd64 (2.7.9-2+deb8u1) ...
+Selecting previously unselected package libc-dev-bin.
+Preparing to unpack .../libc-dev-bin_2.19-18+deb8u6_amd64.deb ...
+Unpacking libc-dev-bin (2.19-18+deb8u6) ...
+Selecting previously unselected package linux-libc-dev:amd64.
+Preparing to unpack .../linux-libc-dev_3.16.36-1+deb8u1_amd64.deb ...
+Unpacking linux-libc-dev:amd64 (3.16.36-1+deb8u1) ...
+Selecting previously unselected package libc6-dev:amd64.
+Preparing to unpack .../libc6-dev_2.19-18+deb8u6_amd64.deb ...
+Unpacking libc6-dev:amd64 (2.19-18+deb8u6) ...
+Selecting previously unselected package libexpat1-dev:amd64.
+Preparing to unpack .../libexpat1-dev_2.1.0-6+deb8u3_amd64.deb ...
+Unpacking libexpat1-dev:amd64 (2.1.0-6+deb8u3) ...
+Selecting previously unselected package libpython2.7-dev:amd64.
+Preparing to unpack .../libpython2.7-dev_2.7.9-2+deb8u1_amd64.deb ...
+Unpacking libpython2.7-dev:amd64 (2.7.9-2+deb8u1) ...
+Selecting previously unselected package libquadmath0:amd64.
+Preparing to unpack .../libquadmath0_4.9.2-10_amd64.deb ...
+Unpacking libquadmath0:amd64 (4.9.2-10) ...
+Selecting previously unselected package libtsan0:amd64.
+Preparing to unpack .../libtsan0_4.9.2-10_amd64.deb ...
+Unpacking libtsan0:amd64 (4.9.2-10) ...
+Selecting previously unselected package libubsan0:amd64.
+Preparing to unpack .../libubsan0_4.9.2-10_amd64.deb ...
+Unpacking libubsan0:amd64 (4.9.2-10) ...
+Selecting previously unselected package libxau6:amd64.
+Preparing to unpack .../libxau6_1%3a1.0.8-1_amd64.deb ...
+Unpacking libxau6:amd64 (1:1.0.8-1) ...
+Selecting previously unselected package libxdmcp6:amd64.
+Preparing to unpack .../libxdmcp6_1%3a1.1.1-1+b1_amd64.deb ...
+Unpacking libxdmcp6:amd64 (1:1.1.1-1+b1) ...
+Selecting previously unselected package libxcb1:amd64.
+Preparing to unpack .../libxcb1_1.10-3+b1_amd64.deb ...
+Unpacking libxcb1:amd64 (1.10-3+b1) ...
+Selecting previously unselected package libx11-data.
+Preparing to unpack .../libx11-data_2%3a1.6.2-3_all.deb ...
+Unpacking libx11-data (2:1.6.2-3) ...
+Selecting previously unselected package libx11-6:amd64.
+Preparing to unpack .../libx11-6_2%3a1.6.2-3_amd64.deb ...
+Unpacking libx11-6:amd64 (2:1.6.2-3) ...
+Selecting previously unselected package libxext6:amd64.
+Preparing to unpack .../libxext6_2%3a1.3.3-1_amd64.deb ...
+Unpacking libxext6:amd64 (2:1.3.3-1) ...
+Selecting previously unselected package libxmuu1:amd64.
+Preparing to unpack .../libxmuu1_2%3a1.1.2-1_amd64.deb ...
+Unpacking libxmuu1:amd64 (2:1.1.2-1) ...
+Selecting previously unselected package libmpc3:amd64.
+Preparing to unpack .../libmpc3_1.0.2-1_amd64.deb ...
+Unpacking libmpc3:amd64 (1.0.2-1) ...
+Selecting previously unselected package less.
+Preparing to unpack .../archives/less_458-3_amd64.deb ...
+Unpacking less (458-3) ...
+Selecting previously unselected package manpages.
+Preparing to unpack .../manpages_3.74-1_all.deb ...
+Unpacking manpages (3.74-1) ...
+Selecting previously unselected package openssh-client.
+Preparing to unpack .../openssh-client_1%3a6.7p1-5+deb8u3_amd64.deb ...
+Unpacking openssh-client (1:6.7p1-5+deb8u3) ...
+Selecting previously unselected package patch.
+Preparing to unpack .../patch_2.7.5-1_amd64.deb ...
+Unpacking patch (2.7.5-1) ...
+Selecting previously unselected package autotools-dev.
+Preparing to unpack .../autotools-dev_20140911.1_all.deb ...
+Unpacking autotools-dev (20140911.1) ...
+Selecting previously unselected package binutils.
+Preparing to unpack .../binutils_2.25-5_amd64.deb ...
+Unpacking binutils (2.25-5) ...
+Selecting previously unselected package bzip2-doc.
+Preparing to unpack .../bzip2-doc_1.0.6-7_all.deb ...
+Unpacking bzip2-doc (1.0.6-7) ...
+Selecting previously unselected package cpp-4.9.
+Preparing to unpack .../cpp-4.9_4.9.2-10_amd64.deb ...
+Unpacking cpp-4.9 (4.9.2-10) ...
+Selecting previously unselected package cpp.
+Preparing to unpack .../cpp_4%3a4.9.2-2_amd64.deb ...
+Unpacking cpp (4:4.9.2-2) ...
+Selecting previously unselected package libgcc-4.9-dev:amd64.
+Preparing to unpack .../libgcc-4.9-dev_4.9.2-10_amd64.deb ...
+Unpacking libgcc-4.9-dev:amd64 (4.9.2-10) ...
+Selecting previously unselected package gcc-4.9.
+Preparing to unpack .../gcc-4.9_4.9.2-10_amd64.deb ...
+Unpacking gcc-4.9 (4.9.2-10) ...
+Selecting previously unselected package gcc.
+Preparing to unpack .../gcc_4%3a4.9.2-2_amd64.deb ...
+Unpacking gcc (4:4.9.2-2) ...
+Selecting previously unselected package libstdc++-4.9-dev:amd64.
+Preparing to unpack .../libstdc++-4.9-dev_4.9.2-10_amd64.deb ...
+Unpacking libstdc++-4.9-dev:amd64 (4.9.2-10) ...
+Selecting previously unselected package g++-4.9.
+Preparing to unpack .../g++-4.9_4.9.2-10_amd64.deb ...
+Unpacking g++-4.9 (4.9.2-10) ...
+Selecting previously unselected package g++.
+Preparing to unpack .../g++_4%3a4.9.2-2_amd64.deb ...
+Unpacking g++ (4:4.9.2-2) ...
+Selecting previously unselected package liberror-perl.
+Preparing to unpack .../liberror-perl_0.17-1.1_all.deb ...
+Unpacking liberror-perl (0.17-1.1) ...
+Selecting previously unselected package git-man.
+Preparing to unpack .../git-man_1%3a2.1.4-2.1+deb8u2_all.deb ...
+Unpacking git-man (1:2.1.4-2.1+deb8u2) ...
+Selecting previously unselected package git.
+Preparing to unpack .../git_1%3a2.1.4-2.1+deb8u2_amd64.deb ...
+Unpacking git (1:2.1.4-2.1+deb8u2) ...
+Selecting previously unselected package help2man.
+Preparing to unpack .../help2man_1.46.4_amd64.deb ...
+Unpacking help2man (1.46.4) ...
+Selecting previously unselected package comerr-dev.
+Preparing to unpack .../comerr-dev_2.1-1.42.12-2_amd64.deb ...
+Unpacking comerr-dev (2.1-1.42.12-2) ...
+Selecting previously unselected package krb5-multidev.
+Preparing to unpack .../krb5-multidev_1.12.1+dfsg-19+deb8u2_amd64.deb ...
+Unpacking krb5-multidev (1.12.1+dfsg-19+deb8u2) ...
+Selecting previously unselected package libbz2-dev:amd64.
+Preparing to unpack .../libbz2-dev_1.0.6-7+b3_amd64.deb ...
+Unpacking libbz2-dev:amd64 (1.0.6-7+b3) ...
+Selecting previously unselected package libcommon-sense-perl.
+Preparing to unpack .../libcommon-sense-perl_3.73-2+b3_amd64.deb ...
+Unpacking libcommon-sense-perl (3.73-2+b3) ...
+Selecting previously unselected package libcurl4-gnutls-dev:amd64.
+Preparing to unpack .../libcurl4-gnutls-dev_7.38.0-4+deb8u4_amd64.deb ...
+Unpacking libcurl4-gnutls-dev:amd64 (7.38.0-4+deb8u4) ...
+Selecting previously unselected package libsepol1-dev:amd64.
+Preparing to unpack .../libsepol1-dev_2.3-2_amd64.deb ...
+Unpacking libsepol1-dev:amd64 (2.3-2) ...
+Selecting previously unselected package libpcre3-dev:amd64.
+Preparing to unpack .../libpcre3-dev_2%3a8.35-3.3+deb8u4_amd64.deb ...
+Unpacking libpcre3-dev:amd64 (2:8.35-3.3+deb8u4) ...
+Selecting previously unselected package libselinux1-dev:amd64.
+Preparing to unpack .../libselinux1-dev_2.3-2_amd64.deb ...
+Unpacking libselinux1-dev:amd64 (2.3-2) ...
+Selecting previously unselected package libfuse-dev.
+Preparing to unpack .../libfuse-dev_2.9.3-15+deb8u2_amd64.deb ...
+Unpacking libfuse-dev (2.9.3-15+deb8u2) ...
+Selecting previously unselected package libjson-perl.
+Preparing to unpack .../libjson-perl_2.61-1_all.deb ...
+Unpacking libjson-perl (2.61-1) ...
+Selecting previously unselected package libjson-xs-perl.
+Preparing to unpack .../libjson-xs-perl_2.340-1+b2_amd64.deb ...
+Unpacking libjson-xs-perl (2.340-1+b2) ...
+Selecting previously unselected package libltdl-dev:amd64.
+Preparing to unpack .../libltdl-dev_2.4.2-1.11+b1_amd64.deb ...
+Unpacking libltdl-dev:amd64 (2.4.2-1.11+b1) ...
+Selecting previously unselected package libpam0g-dev:amd64.
+Preparing to unpack .../libpam0g-dev_1.1.8-3.1+deb8u1+b1_amd64.deb ...
+Unpacking libpam0g-dev:amd64 (1.1.8-3.1+deb8u1+b1) ...
+Selecting previously unselected package libpython-dev:amd64.
+Preparing to unpack .../libpython-dev_2.7.9-1_amd64.deb ...
+Unpacking libpython-dev:amd64 (2.7.9-1) ...
+Selecting previously unselected package zlib1g-dev:amd64.
+Preparing to unpack .../zlib1g-dev_1%3a1.2.8.dfsg-2+b1_amd64.deb ...
+Unpacking zlib1g-dev:amd64 (1:1.2.8.dfsg-2+b1) ...
+Selecting previously unselected package libssl-dev:amd64.
+Preparing to unpack .../libssl-dev_1.0.1t-1+deb8u5_amd64.deb ...
+Unpacking libssl-dev:amd64 (1.0.1t-1+deb8u5) ...
+Selecting previously unselected package libssl-doc.
+Preparing to unpack .../libssl-doc_1.0.1t-1+deb8u5_all.deb ...
+Unpacking libssl-doc (1.0.1t-1+deb8u5) ...
+Selecting previously unselected package libtool.
+Preparing to unpack .../libtool_2.4.2-1.11_all.deb ...
+Unpacking libtool (2.4.2-1.11) ...
+Selecting previously unselected package libxml2-dev:amd64.
+Preparing to unpack .../libxml2-dev_2.9.1+dfsg1-5+deb8u3_amd64.deb ...
+Unpacking libxml2-dev:amd64 (2.9.1+dfsg1-5+deb8u3) ...
+Selecting previously unselected package make.
+Preparing to unpack .../make_4.0-8.1_amd64.deb ...
+Unpacking make (4.0-8.1) ...
+Selecting previously unselected package manpages-dev.
+Preparing to unpack .../manpages-dev_3.74-1_all.deb ...
+Unpacking manpages-dev (3.74-1) ...
+Selecting previously unselected package python2.7-dev.
+Preparing to unpack .../python2.7-dev_2.7.9-2+deb8u1_amd64.deb ...
+Unpacking python2.7-dev (2.7.9-2+deb8u1) ...
+Selecting previously unselected package python-dev.
+Preparing to unpack .../python-dev_2.7.9-1_amd64.deb ...
+Unpacking python-dev (2.7.9-1) ...
+Selecting previously unselected package rsync.
+Preparing to unpack .../rsync_3.1.1-3_amd64.deb ...
+Unpacking rsync (3.1.1-3) ...
+Selecting previously unselected package xauth.
+Preparing to unpack .../xauth_1%3a1.0.9-1_amd64.deb ...
+Unpacking xauth (1:1.0.9-1) ...
+Selecting previously unselected package libkrb5-dev.
+Preparing to unpack .../libkrb5-dev_1.12.1+dfsg-19+deb8u2_amd64.deb ...
+Unpacking libkrb5-dev (1.12.1+dfsg-19+deb8u2) ...
+Selecting previously unselected package python-exif.
+Preparing to unpack .../python-exif_1.4.2-3_all.deb ...
+Unpacking python-exif (1.4.2-3) ...
+Selecting previously unselected package unixodbc-dev.
+Preparing to unpack .../unixodbc-dev_2.3.1-3_amd64.deb ...
+Unpacking unixodbc-dev (2.3.1-3) ...
+Processing triggers for mime-support (3.58) ...
+Processing triggers for systemd (215-17+deb8u5) ...
+Setting up libgssrpc4:amd64 (1.12.1+dfsg-19+deb8u2) ...
+Setting up libkadm5clnt-mit9:amd64 (1.12.1+dfsg-19+deb8u2) ...
+Setting up libkdb5-7:amd64 (1.12.1+dfsg-19+deb8u2) ...
+Setting up libkadm5srv-mit9:amd64 (1.12.1+dfsg-19+deb8u2) ...
+Setting up libasan1:amd64 (4.9.2-10) ...
+Setting up libatomic1:amd64 (4.9.2-10) ...
+Setting up libcilkrts5:amd64 (4.9.2-10) ...
+Setting up libisl10:amd64 (0.12.2-2) ...
+Setting up libcloog-isl4:amd64 (0.18.2-1+b2) ...
+Setting up libgomp1:amd64 (4.9.2-10) ...
+Setting up libitm1:amd64 (4.9.2-10) ...
+Setting up liblsan0:amd64 (4.9.2-10) ...
+Setting up libmpfr4:amd64 (3.1.2-2) ...
+Setting up libpcrecpp0:amd64 (2:8.35-3.3+deb8u4) ...
+Setting up libpython2.7:amd64 (2.7.9-2+deb8u1) ...
+Setting up libc-dev-bin (2.19-18+deb8u6) ...
+Setting up linux-libc-dev:amd64 (3.16.36-1+deb8u1) ...
+Setting up libc6-dev:amd64 (2.19-18+deb8u6) ...
+Setting up libexpat1-dev:amd64 (2.1.0-6+deb8u3) ...
+Setting up libpython2.7-dev:amd64 (2.7.9-2+deb8u1) ...
+Setting up libquadmath0:amd64 (4.9.2-10) ...
+Setting up libtsan0:amd64 (4.9.2-10) ...
+Setting up libubsan0:amd64 (4.9.2-10) ...
+Setting up libxau6:amd64 (1:1.0.8-1) ...
+Setting up libxdmcp6:amd64 (1:1.1.1-1+b1) ...
+Setting up libxcb1:amd64 (1.10-3+b1) ...
+Setting up libx11-data (2:1.6.2-3) ...
+Setting up libx11-6:amd64 (2:1.6.2-3) ...
+Setting up libxext6:amd64 (2:1.3.3-1) ...
+Setting up libxmuu1:amd64 (2:1.1.2-1) ...
+Setting up libmpc3:amd64 (1.0.2-1) ...
+Setting up less (458-3) ...
+debconf: unable to initialize frontend: Dialog
+debconf: (TERM is not set, so the dialog frontend is not usable.)
+debconf: falling back to frontend: Readline
+Setting up manpages (3.74-1) ...
+Setting up openssh-client (1:6.7p1-5+deb8u3) ...
+Setting up patch (2.7.5-1) ...
+Setting up autotools-dev (20140911.1) ...
+Setting up binutils (2.25-5) ...
+Setting up bzip2-doc (1.0.6-7) ...
+Setting up cpp-4.9 (4.9.2-10) ...
+Setting up cpp (4:4.9.2-2) ...
+Setting up libgcc-4.9-dev:amd64 (4.9.2-10) ...
+Setting up gcc-4.9 (4.9.2-10) ...
+Setting up gcc (4:4.9.2-2) ...
+Setting up libstdc++-4.9-dev:amd64 (4.9.2-10) ...
+Setting up g++-4.9 (4.9.2-10) ...
+Setting up g++ (4:4.9.2-2) ...
+update-alternatives: using /usr/bin/g++ to provide /usr/bin/c++ (c++) in auto mode
+Setting up liberror-perl (0.17-1.1) ...
+Setting up git-man (1:2.1.4-2.1+deb8u2) ...
+Setting up git (1:2.1.4-2.1+deb8u2) ...
+Setting up help2man (1.46.4) ...
+Setting up comerr-dev (2.1-1.42.12-2) ...
+Setting up krb5-multidev (1.12.1+dfsg-19+deb8u2) ...
+Setting up libbz2-dev:amd64 (1.0.6-7+b3) ...
+Setting up libcommon-sense-perl (3.73-2+b3) ...
+Setting up libcurl4-gnutls-dev:amd64 (7.38.0-4+deb8u4) ...
+Setting up libsepol1-dev:amd64 (2.3-2) ...
+Setting up libpcre3-dev:amd64 (2:8.35-3.3+deb8u4) ...
+Setting up libselinux1-dev:amd64 (2.3-2) ...
+Setting up libfuse-dev (2.9.3-15+deb8u2) ...
+Setting up libjson-perl (2.61-1) ...
+Setting up libjson-xs-perl (2.340-1+b2) ...
+Setting up libltdl-dev:amd64 (2.4.2-1.11+b1) ...
+Setting up libpam0g-dev:amd64 (1.1.8-3.1+deb8u1+b1) ...
+Setting up libpython-dev:amd64 (2.7.9-1) ...
+Setting up zlib1g-dev:amd64 (1:1.2.8.dfsg-2+b1) ...
+Setting up libssl-dev:amd64 (1.0.1t-1+deb8u5) ...
+Setting up libssl-doc (1.0.1t-1+deb8u5) ...
+Setting up libtool (2.4.2-1.11) ...
+Setting up libxml2-dev:amd64 (2.9.1+dfsg1-5+deb8u3) ...
+Setting up make (4.0-8.1) ...
+Setting up manpages-dev (3.74-1) ...
+Setting up python2.7-dev (2.7.9-2+deb8u1) ...
+Setting up python-dev (2.7.9-1) ...
+Setting up rsync (3.1.1-3) ...
+invoke-rc.d: policy-rc.d denied execution of restart.
+Setting up xauth (1:1.0.9-1) ...
+Setting up libkrb5-dev (1.12.1+dfsg-19+deb8u2) ...
+Setting up python-exif (1.4.2-3) ...
+Setting up unixodbc-dev (2.3.1-3) ...
+Processing triggers for libc-bin (2.19-18+deb8u6) ...
+Processing triggers for systemd (215-17+deb8u5) ...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+irods-externals-avro1.7.7-0 is already the newest version.
+irods-externals-avro1.7.7-0 set to manually installed.
+irods-externals-boost1.60.0-0 is already the newest version.
+irods-externals-boost1.60.0-0 set to manually installed.
+irods-externals-clang-runtime3.8-0 is already the newest version.
+irods-externals-clang-runtime3.8-0 set to manually installed.
+irods-externals-jansson2.7-0 is already the newest version.
+irods-externals-jansson2.7-0 set to manually installed.
+irods-externals-libarchive3.1.2-0 is already the newest version.
+irods-externals-libarchive3.1.2-0 set to manually installed.
+irods-externals-zeromq4-14.1.3-0 is already the newest version.
+irods-externals-zeromq4-14.1.3-0 set to manually installed.
+The following NEW packages will be installed:
+  irods-dev irods-externals-autoconf5ad3567c-0 irods-externals-clang3.8-0
+  irods-externals-cmake3.5.2-0 irods-externals-cppzmq4.1-0
+  irods-externals-epm4.2-0 irods-externals-imagemagick7.0.3-0
+  irods-externals-libs3f6a2098e-0 irods-externals-qpid-with-proton0.34-0
+0 upgraded, 9 newly installed, 0 to remove and 3 not upgraded.
+Need to get 350 MB of archives.
+After this operation, 1,216 MB of additional disk space will be used.
+Get:1 https://unstable.irods.org/apt/ trusty/main irods-dev amd64 4.2.0 [1,672 kB]
+Get:2 https://unstable.irods.org/apt/ trusty/main irods-externals-autoconf5ad3567c-0 amd64 1.0~trusty [928 kB]
+Get:3 https://unstable.irods.org/apt/ trusty/main irods-externals-clang3.8-0 amd64 1.0~trusty [283 MB]
+Get:4 https://unstable.irods.org/apt/ trusty/main irods-externals-cmake3.5.2-0 amd64 1.0~trusty [13.5 MB]
+Get:5 https://unstable.irods.org/apt/ trusty/main irods-externals-cppzmq4.1-0 amd64 1.0~trusty [5,908 B]
+Get:6 https://unstable.irods.org/apt/ trusty/main irods-externals-epm4.2-0 amd64 1.0~trusty [66.6 kB]
+Get:7 https://unstable.irods.org/apt/ trusty/main irods-externals-imagemagick7.0.3-0 amd64 1.0~trusty [17.9 MB]
+Get:8 https://unstable.irods.org/apt/ trusty/main irods-externals-libs3f6a2098e-0 amd64 1.0~trusty [138 kB]
+Get:9 https://unstable.irods.org/apt/ trusty/main irods-externals-qpid-with-proton0.34-0 amd64 1.0~trusty [33.2 MB]
+Fetched 350 MB in 37s (9,251 kB/s)
+Selecting previously unselected package irods-dev.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 35165 files and directories currently installed.)
+Preparing to unpack .../irods-dev_4.2.0_amd64.deb ...
+Unpacking irods-dev (4.2.0) ...
+Selecting previously unselected package irods-externals-autoconf5ad3567c-0.
+Preparing to unpack .../irods-externals-autoconf5ad3567c-0_1.0~trusty_amd64.deb ...
+Unpacking irods-externals-autoconf5ad3567c-0 (1.0~trusty) ...
+Selecting previously unselected package irods-externals-clang3.8-0.
+Preparing to unpack .../irods-externals-clang3.8-0_1.0~trusty_amd64.deb ...
+Unpacking irods-externals-clang3.8-0 (1.0~trusty) ...
+Selecting previously unselected package irods-externals-cmake3.5.2-0.
+Preparing to unpack .../irods-externals-cmake3.5.2-0_1.0~trusty_amd64.deb ...
+Unpacking irods-externals-cmake3.5.2-0 (1.0~trusty) ...
+Selecting previously unselected package irods-externals-cppzmq4.1-0.
+Preparing to unpack .../irods-externals-cppzmq4.1-0_1.0~trusty_amd64.deb ...
+Unpacking irods-externals-cppzmq4.1-0 (1.0~trusty) ...
+Selecting previously unselected package irods-externals-epm4.2-0.
+Preparing to unpack .../irods-externals-epm4.2-0_1.0~trusty_amd64.deb ...
+Unpacking irods-externals-epm4.2-0 (1.0~trusty) ...
+Selecting previously unselected package irods-externals-imagemagick7.0.3-0.
+Preparing to unpack .../irods-externals-imagemagick7.0.3-0_1.0~trusty_amd64.deb ...
+Unpacking irods-externals-imagemagick7.0.3-0 (1.0~trusty) ...
+Selecting previously unselected package irods-externals-libs3f6a2098e-0.
+Preparing to unpack .../irods-externals-libs3f6a2098e-0_1.0~trusty_amd64.deb ...
+Unpacking irods-externals-libs3f6a2098e-0 (1.0~trusty) ...
+Selecting previously unselected package irods-externals-qpid-with-proton0.34-0.
+Preparing to unpack .../irods-externals-qpid-with-proton0.34-0_1.0~trusty_amd64.deb ...
+Unpacking irods-externals-qpid-with-proton0.34-0 (1.0~trusty) ...
+Setting up irods-dev (4.2.0) ...
+Setting up irods-externals-autoconf5ad3567c-0 (1.0~trusty) ...
+Setting up irods-externals-clang3.8-0 (1.0~trusty) ...
+Setting up irods-externals-cmake3.5.2-0 (1.0~trusty) ...
+Setting up irods-externals-cppzmq4.1-0 (1.0~trusty) ...
+Setting up irods-externals-epm4.2-0 (1.0~trusty) ...
+Setting up irods-externals-imagemagick7.0.3-0 (1.0~trusty) ...
+Setting up irods-externals-libs3f6a2098e-0 (1.0~trusty) ...
+Setting up irods-externals-qpid-with-proton0.34-0 (1.0~trusty) ...
+CHECKPOINT: verify clang++ and cmake
+$ which clang++
+/opt/irods-externals/clang3.8-0/bin/clang++
+$ which cmake
+/opt/irods-externals/cmake3.5.2-0/bin/cmake
+-- The C compiler identification is Clang 3.8.0
+-- The CXX compiler identification is Clang 3.8.0
+-- Check for working C compiler: /opt/irods-externals/clang3.8-0/bin/clang
+-- Check for working C compiler: /opt/irods-externals/clang3.8-0/bin/clang -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /opt/irods-externals/clang3.8-0/bin/clang++
+-- Check for working CXX compiler: /opt/irods-externals/clang3.8-0/bin/clang++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Setting unspecified CMAKE_BUILD_TYPE to 'Release'
+-- Setting unspecified CPACK_PACKAGING_INSTALL_PREFIX to '/'. This is the correct setting for normal builds.
+-- Setting unspecified CPACK_GENERATOR to DEB. This is the correct setting for normal builds.
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /root/build_lz
+Scanning dependencies of target msifilesystem_rename
+[ 12%] Building CXX object CMakeFiles/msifilesystem_rename.dir/msifilesystem_rename/libmsifilesystem_rename.cpp.o
+[ 25%] Linking CXX shared module libmsifilesystem_rename.so
+[ 25%] Built target msifilesystem_rename
+Scanning dependencies of target msiget_filepaths_from_glob
+[ 37%] Building CXX object CMakeFiles/msiget_filepaths_from_glob.dir/msiget_filepaths_from_glob/libmsiget_filepaths_from_glob.cpp.o
+[ 50%] Linking CXX shared module libmsiget_filepaths_from_glob.so
+[ 50%] Built target msiget_filepaths_from_glob
+Scanning dependencies of target msiget_image_meta
+[ 62%] Building CXX object CMakeFiles/msiget_image_meta.dir/msiget_image_meta/libmsiget_image_meta.cpp.o
+[ 75%] Linking CXX shared module libmsiget_image_meta.so
+[ 75%] Built target msiget_image_meta
+Scanning dependencies of target msiput_dataobj_or_coll
+[ 87%] Building CXX object CMakeFiles/msiput_dataobj_or_coll.dir/msiput_dataobj_or_coll/libmsiput_dataobj_or_coll.cpp.o
+[100%] Linking CXX shared module libmsiput_dataobj_or_coll.so
+[100%] Built target msiput_dataobj_or_coll
+Run CPack packaging tool...
+CPack: Create package using DEB
+CPack: Install projects
+CPack: - Run preinstall target for: irods-landing-zone-example
+CPack: - Install project: irods-landing-zone-example
+CPack: Create package
+CPack: - package: /root/build_lz/irods-landing-zone-example_4.2.0~trusty_amd64.deb generated.
+Selecting previously unselected package irods-landing-zone-example.
+(Reading database ... 41372 files and directories currently installed.)
+Preparing to unpack .../irods-landing-zone-example_4.2.0~trusty_amd64.deb ...
+Unpacking irods-landing-zone-example (4.2.0) ...
+Setting up irods-landing-zone-example (4.2.0) ...
+CHECKPOINT: verify server_config.json
+$ cat /etc/irods/server_config.json
+{
+  "advanced_settings": {
+    "default_number_of_transfer_threads": 4,
+    "default_temporary_password_lifetime_in_seconds": 120,
+    "maximum_number_of_concurrent_rule_engine_server_processes": 4,
+    "maximum_size_for_single_buffer_in_megabytes": 32,
+    "maximum_temporary_password_lifetime_in_seconds": 1000,
+    "rule_engine_server_execution_time_in_seconds": 120,
+    "rule_engine_server_sleep_time_in_seconds": 30,
+    "transfer_buffer_size_for_parallel_transfer_in_megabytes": 4,
+    "transfer_chunk_size_for_parallel_transfer_in_megabytes": 40
+  },
+  "catalog_provider_hosts": [
+    "provider"
+  ],
+  "catalog_service_role": "provider",
+  "default_dir_mode": "0750",
+  "default_file_mode": "0600",
+  "default_hash_scheme": "SHA256",
+  "default_resource_name": "demoResc",
+  "environment_variables": {
+    "IRODS_DATABASE_USER_PASSWORD_SALT": "tempsalt"
+  },
+  "federation": [],
+  "match_hash_policy": "compatible",
+  "negotiation_key": "TEMPORARY_32byte_negotiation_key",
+  "plugin_configuration": {
+    "authentication": {},
+    "database": {
+      "postgres": {
+        "db_host": "provider",
+        "db_name": "ICAT",
+        "db_odbc_driver": "PostgreSQL Unicode",
+        "db_password": "temppassword",
+        "db_port": 5432,
+        "db_username": "irods"
+      }
+    },
+    "network": {},
+    "resource": {},
+    "rule_engines": [
+      {
+        "instance_name": "irods_rule_engine_plugin-python-instance",
+        "plugin_name": "irods_rule_engine_plugin-python",
+        "plugin_specific_configuration": "{}"
+      },
+      {
+        "instance_name": "irods_rule_engine_plugin-irods_rule_language-instance",
+        "plugin_name": "irods_rule_engine_plugin-irods_rule_language",
+        "plugin_specific_configuration": {
+          "re_data_variable_mapping_set": [
+            "core"
+          ],
+          "re_function_name_mapping_set": [
+            "core"
+          ],
+          "re_rulebase_set": [
+            "training",
+            "core"
+          ],
+          "regexes_for_supported_peps": [
+            "ac[^ ]*",
+            "msi[^ ]*",
+            "[^ ]*pep_[^ ]*_(pre|post)"
+          ]
+        },
+        "shared_memory_instance": "legacy_re"
+      }
+    ]
+  },
+  "rule_engine_namespaces": [
+    "",
+    "audit_",
+    "indexing_"
+  ],
+  "schema_name": "server_config",
+  "schema_validation_base_uri": "file:///var/lib/irods/configuration_schemas",
+  "schema_version": "v3",
+  "server_control_plane_encryption_algorithm": "AES-256-CBC",
+  "server_control_plane_encryption_num_hash_rounds": 16,
+  "server_control_plane_key": "TEMPORARY__32byte_ctrl_plane_key",
+  "server_control_plane_port": 1248,
+  "server_control_plane_timeout_milliseconds": 10000,
+  "server_port_range_end": 20199,
+  "server_port_range_start": 20000,
+  "xmsg_port": 1279,
+  "zone_auth_scheme": "native",
+  "zone_key": "TEMPORARY_zone_key",
+  "zone_name": "tempZone",
+  "zone_port": 1247,
+  "zone_user": "rods"
+}
+TEST: use stickers.jpg example to show python rule in action
+$ wget ftp://ftp.renci.org/pub/irods/training/stickers.jpg
+$ iput stickers.jpg
+$ imeta ls -d stickers.jpg
+AVUs defined for dataObj stickers.jpg:
+attribute: Image Orientation
+value: Horizontal (normal)
+units: 
+----
+attribute: EXIF ColorSpace
+value: sRGB
+units: 
+----
+attribute: EXIF SubjectArea
+value: [2015, 1511, 2217, 1330]
+units: 
+----
+attribute: GPS GPSDestBearingRef
+value: T
+units: 
+----
+attribute: EXIF FNumber
+value: 11/5
+units: 
+----
+attribute: EXIF SceneType
+value: Directly Photographed
+units: 
+----
+attribute: Thumbnail JPEGInterchangeFormatLength
+value: 9289
+units: 
+----
+attribute: EXIF SubSecTimeOriginal
+value: 738
+units: 
+----
+attribute: Image Make
+value: Apple
+units: 
+----
+attribute: EXIF ApertureValue
+value: 7983/3509
+units: 
+----
+attribute: Image ResolutionUnit
+value: Pixels/Inch
+units: 
+----
+attribute: GPS GPSAltitude
+value: 15503/154
+units: 
+----
+attribute: EXIF FlashPixVersion
+value: 0100
+units: 
+----
+attribute: EXIF ExifImageLength
+value: 3024
+units: 
+----
+attribute: EXIF WhiteBalance
+value: Auto
+units: 
+----
+attribute: GPS GPSAltitudeRef
+value: 0
+units: 
+----
+attribute: GPS GPSTimeStamp
+value: [17, 33, 20]
+units: 
+----
+attribute: EXIF ExposureTime
+value: 1/30
+units: 
+----
+attribute: Thumbnail YResolution
+value: 72
+units: 
+----
+attribute: GPS GPSLatitude
+value: [35, 56, 562/25]
+units: 
+----
+attribute: GPS GPSLongitude
+value: [79, 1, 647/100]
+units: 
+----
+attribute: GPS GPSSpeed
+value: 0
+units: 
+----
+attribute: Image Software
+value: 9.3.2
+units: 
+----
+attribute: GPS GPSImgDirectionRef
+value: T
+units: 
+----
+attribute: EXIF SceneCaptureType
+value: Standard
+units: 
+----
+attribute: GPS GPSDate
+value: 2016:06:03
+units: 
+----
+attribute: GPS GPSImgDirection
+value: 67881/2009
+units: 
+----
+attribute: GPS GPSLongitudeRef
+value: W
+units: 
+----
+attribute: Thumbnail ResolutionUnit
+value: Pixels/Inch
+units: 
+----
+attribute: GPS Tag 0x001F
+value: 10
+units: 
+----
+attribute: EXIF DateTimeDigitized
+value: 2016:06:03 13:33:20
+units: 
+----
+attribute: EXIF SensingMethod
+value: One-chip color area
+units: 
+----
+attribute: EXIF ShutterSpeedValue
+value: 7650/1559
+units: 
+----
+attribute: EXIF LensModel
+value: iPhone 6s back camera 4.15mm f/2.2
+units: 
+----
+attribute: Image GPSInfo
+value: 1610
+units: 
+----
+attribute: EXIF MeteringMode
+value: Pattern
+units: 
+----
+attribute: EXIF DateTimeOriginal
+value: 2016:06:03 13:33:20
+units: 
+----
+attribute: GPS GPSDestBearing
+value: 67881/2009
+units: 
+----
+attribute: EXIF ExposureProgram
+value: Program Normal
+units: 
+----
+attribute: EXIF BrightnessValue
+value: 2632/897
+units: 
+----
+attribute: EXIF LensSpecification
+value: [83/20, 83/20, 11/5, 11/5]
+units: 
+----
+attribute: Thumbnail JPEGInterchangeFormat
+value: 2014
+units: 
+----
+attribute: GPS GPSLatitudeRef
+value: N
+units: 
+----
+attribute: EXIF FocalLength
+value: 83/20
+units: 
+----
+attribute: GPS GPSSpeedRef
+value: K
+units: 
+----
+attribute: EXIF FocalLengthIn35mmFilm
+value: 29
+units: 
+----
+attribute: EXIF ExposureMode
+value: Auto Exposure
+units: 
+----
+attribute: EXIF ComponentsConfiguration
+value: YCbCr
+units: 
+----
+attribute: Thumbnail XResolution
+value: 72
+units: 
+----
+attribute: Image YResolution
+value: 72
+units: 
+----
+attribute: Thumbnail Compression
+value: JPEG (old-style)
+units: 
+----
+attribute: EXIF SubSecTimeDigitized
+value: 738
+units: 
+----
+attribute: EXIF Flash
+value: Flash did not fire, compulsory flash mode
+units: 
+----
+attribute: EXIF ISOSpeedRatings
+value: 64
+units: 
+----
+attribute: EXIF ExifVersion
+value: 0221
+units: 
+----
+attribute: EXIF LensMake
+value: Apple
+units: 
+----
+attribute: Image XResolution
+value: 72
+units: 
+----
+attribute: EXIF ExposureBiasValue
+value: 0
+units: 
+----
+attribute: Image DateTime
+value: 2016:06:03 13:33:20
+units: 
+----
+attribute: Image ExifOffset
+value: 204
+units: 
+----
+attribute: Image Model
+value: iPhone 6s
+units: 
+----
+attribute: Image YCbCrPositioning
+value: Centered
+units: 
+----
+attribute: EXIF ExifImageWidth
+value: 4032
+units: 
