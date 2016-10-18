@@ -42,8 +42,9 @@ docker run -d --name icat1 \
     -p 1247 \
     --hostname icat1 \
     mjstealey/docker-irods-icat:4.1.8
-echo "CREATE: icat2 container"
+
 # Create icat2 container from irods v.4.1.8
+echo "CREATE: icat2 container"
 docker run -d --name icat2 \
     -e IRODS_ZONE_NAME=tempZone2 \
     -e IRODS_SERVER_ZONE_KEY=${FED_ZONE2_KEY} \
@@ -57,10 +58,6 @@ echo "INFO: allow icat1 and icat2 to stand up and be configured"
 for pc in $(seq 20 -1 1); do
     echo -ne "$pc ...\033[0K\r" && sleep 1;
 done
-
-# Install jq on icat1 and icat2
-docker exec icat1 apt-get install jq -y
-docker exec icat2 apt-get install jq -y
 
 # Make icat1 and icat2 aware of each other via /etc/hosts
 echo "INFO: update /etc/hosts"
