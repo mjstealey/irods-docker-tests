@@ -1,0 +1,85 @@
+CREATE: icat1 container
+648bab514f93610457a49b310dfa047f84fab0547b251c4a801bfced083cb91a
+CREATE: icat2 container
+2d6080a5be584f46965576c89e2a473d91bfe5eb2d83af4ad915e7169392c61e
+INFO: allow icat1 and icat2 to stand up and be configured
+20 ...[0K19 ...[0K18 ...[0K17 ...[0K16 ...[0K15 ...[0K14 ...[0K13 ...[0K12 ...[0K11 ...[0K10 ...[0K9 ...[0K8 ...[0K7 ...[0K6 ...[0K5 ...[0K4 ...[0K3 ...[0K2 ...[0K1 ...[0KReading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  jq
+0 upgraded, 1 newly installed, 0 to remove and 3 not upgraded.
+Need to get 102 kB of archives.
+After this operation, 283 kB of additional disk space will be used.
+Get:1 http://httpredir.debian.org/debian/ jessie/main jq amd64 1.4-2.1 [102 kB]
+Fetched 102 kB in 0s (320 kB/s)
+Selecting previously unselected package jq.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 14450 files and directories currently installed.)
+Preparing to unpack .../archives/jq_1.4-2.1_amd64.deb ...
+Unpacking jq (1.4-2.1) ...
+Setting up jq (1.4-2.1) ...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  jq
+0 upgraded, 1 newly installed, 0 to remove and 3 not upgraded.
+Need to get 102 kB of archives.
+After this operation, 283 kB of additional disk space will be used.
+Get:1 http://httpredir.debian.org/debian/ jessie/main jq amd64 1.4-2.1 [102 kB]
+Fetched 102 kB in 0s (404 kB/s)
+Selecting previously unselected package jq.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 14450 files and directories currently installed.)
+Preparing to unpack .../archives/jq_1.4-2.1_amd64.deb ...
+Unpacking jq (1.4-2.1) ...
+Setting up jq (1.4-2.1) ...
+INFO: update /etc/hosts
+[root@zone1]$ echo "'172.17.0.3' icat2" >> /etc/hosts
+[root@zone2]$ echo "'172.17.0.2' icat1" >> /etc/hosts
+INFO: add rodsuser to each zone
+[rods@zone1]$ iadmin mkuser zone1_user rodsuser
+[rods@zone1]$ iadmin moduser zone1_user password zone1_pass
+[rods@zone2]$ iadmin mkuser zone2_user rodsuser
+[rods@zone2]$ iadmin moduser zone2_user password zone1_pass
+[rods@zone1]$ iadmin mkzone tempZone2 remote 172.17.0.3:1247
+[rods@zone1]$ iadmin mkuser zone2_user#tempZone2 rodsuser
+[rods@zone1]$ ichmod -r -M own zone2_user#tempZone2 /tempZone1/home/zone1_user
+[rods@zone1]$ ichmod -r -M inherit /tempZone1/home/zone1_user
+[rods@zone2]$ iadmin mkzone tempZone1 remote 172.17.0.2:1247
+[rods@zone2]$ iadmin mkuser zone1_user#tempZone1 rodsuser
+[rods@zone2]$ ichmod -r -M own zone1_user#tempZone1 /tempZone2/home/zone2_user
+[rods@zone2]$ ichmod -r -M inherit /tempZone2/home/zone2_user
+FEDERATION: settings for icat1
+[
+  {
+    "icat_host": "icat2",
+    "zone_name": "tempZone2",
+    "zone_key": "zone2_ZONE_KEY",
+    "negotiation_key": "zone1_and_zone2__NEGOTIATION_KEY"
+  }
+]
+FEDERATION: settings for icat2
+[
+  {
+    "icat_host": "icat1",
+    "zone_name": "tempZone1",
+    "zone_key": "zone1_ZONE_KEY",
+    "negotiation_key": "zone1_and_zone2__NEGOTIATION_KEY"
+  }
+]
+IPUT: files across zones
+[zone1_user]$ iput zone1_user_stickers.jpg /tempZone2/home/zone2_user
+[zone2_user]$ iput zone2_user_stickers.jpg /tempZone1/home/zone1_user
+ILS: show cross zone objects have been added
+[zone1_user]$ ils -A /tempZone2/home/zone2_user
+/tempZone2/home/zone2_user:
+        ACL - zone2_user#tempZone2:own   zone1_user#tempZone1:own   
+        Inheritance - Enabled
+  zone1_user_stickers.jpg
+        ACL - zone2_user#tempZone2:own   zone1_user#tempZone1:own   
+[zone2_user]$ ils -A /tempZone1/home/zone1_user
+/tempZone1/home/zone1_user:
+        ACL - zone1_user#tempZone1:own   zone2_user#tempZone2:own   
+        Inheritance - Enabled
+  zone2_user_stickers.jpg
+        ACL - zone2_user#tempZone2:own   zone1_user#tempZone1:own   
