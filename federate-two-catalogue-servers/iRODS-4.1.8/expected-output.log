@@ -1,39 +1,17 @@
+REMOVE: icat1
+  - docker stop icat1 && docker rm -fv icat1
+icat1
+icat1
+REMOVE: icat2
+  - docker stop icat2 && docker rm -fv icat2
+icat2
+icat2
 CREATE: icat1 container
-648bab514f93610457a49b310dfa047f84fab0547b251c4a801bfced083cb91a
+7101da21ea1e13286d6dcf1321644270285f1cbd1f15a3021f896fb34a9b8e5c
 CREATE: icat2 container
-2d6080a5be584f46965576c89e2a473d91bfe5eb2d83af4ad915e7169392c61e
+a04724ac7c2d2d11623081e85d401339904be48712ea31e640f262f99d3757eb
 INFO: allow icat1 and icat2 to stand up and be configured
-20 ...[0K19 ...[0K18 ...[0K17 ...[0K16 ...[0K15 ...[0K14 ...[0K13 ...[0K12 ...[0K11 ...[0K10 ...[0K9 ...[0K8 ...[0K7 ...[0K6 ...[0K5 ...[0K4 ...[0K3 ...[0K2 ...[0K1 ...[0KReading package lists...
-Building dependency tree...
-Reading state information...
-The following NEW packages will be installed:
-  jq
-0 upgraded, 1 newly installed, 0 to remove and 3 not upgraded.
-Need to get 102 kB of archives.
-After this operation, 283 kB of additional disk space will be used.
-Get:1 http://httpredir.debian.org/debian/ jessie/main jq amd64 1.4-2.1 [102 kB]
-Fetched 102 kB in 0s (320 kB/s)
-Selecting previously unselected package jq.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 14450 files and directories currently installed.)
-Preparing to unpack .../archives/jq_1.4-2.1_amd64.deb ...
-Unpacking jq (1.4-2.1) ...
-Setting up jq (1.4-2.1) ...
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following NEW packages will be installed:
-  jq
-0 upgraded, 1 newly installed, 0 to remove and 3 not upgraded.
-Need to get 102 kB of archives.
-After this operation, 283 kB of additional disk space will be used.
-Get:1 http://httpredir.debian.org/debian/ jessie/main jq amd64 1.4-2.1 [102 kB]
-Fetched 102 kB in 0s (404 kB/s)
-Selecting previously unselected package jq.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 14450 files and directories currently installed.)
-Preparing to unpack .../archives/jq_1.4-2.1_amd64.deb ...
-Unpacking jq (1.4-2.1) ...
-Setting up jq (1.4-2.1) ...
-INFO: update /etc/hosts
+20 ...[0K19 ...[0K18 ...[0K17 ...[0K16 ...[0K15 ...[0K14 ...[0K13 ...[0K12 ...[0K11 ...[0K10 ...[0K9 ...[0K8 ...[0K7 ...[0K6 ...[0K5 ...[0K4 ...[0K3 ...[0K2 ...[0K1 ...[0KINFO: update /etc/hosts
 [root@zone1]$ echo "'172.17.0.3' icat2" >> /etc/hosts
 [root@zone2]$ echo "'172.17.0.2' icat1" >> /etc/hosts
 INFO: add rodsuser to each zone
